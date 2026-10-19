@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# 环境变量
+.env
+.app_secret
+backend/.app_secret
+
+# Node
+node_modules/
+dist/
+*.local
+
+# IDE / 系统
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# 本机运行数据与个人设置
+backend/app/api/adb_settings.json
+logs/
+*.db
+*.sqlite
+*.sqlite3
+*.pid
+.pytest_cache/
+
+# 独立的第三方源码仓库与本地工具安装包
+hoppscotch-src/
+tools/
+
+# 临时分析文件
+/tmp_*
+*.bak*
+
+# 日志
+*.log
+
+# 附件上传目录
+uploads/

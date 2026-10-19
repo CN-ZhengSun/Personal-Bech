@@ -1,0 +1,43 @@
+# ============================================================
+# 测试工作台（Test Workbench）基础设施编排
+# 用法：docker compose up -d
+# ============================================================
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: testworkbench-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      TZ: Asia/Shanghai
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - testworkbench-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p123456"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ------- 预留：Redis（缓存/任务队列），需要时取消注释并 docker compose up -d redis -------
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: testworkbench-redis
+  #   restart: unless-stopped
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - testworkbench-redis-data:/data
+  #   command: ["redis-server", "--appendonly", "yes"]
+
+volumes:
+  # 复用已有命名卷（数据已在其中，root/admin 密码均为 123456）
+  testworkbench-mysql-data:
+    external: true
+  # testworkbench-redis-data:
