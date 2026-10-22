@@ -2183,12 +2183,13 @@ onBeforeUnmount(() => { stopLogcat(); stopAllLogViews(); stopCast(); stopProcTim
 .browse-item { text-align: left; padding: 7px 10px; border: none; background: transparent; border-radius: 6px; font-size: 13px; cursor: pointer; color: #374151; font-family: inherit; }
 .browse-item:hover { background: #eff6ff; color: #1d4ed8; }
 .browse-foot { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding: 10px 14px; border-top: 1px solid #e5e7eb; }
-.cat-btn { padding: 7px 16px; border: 1px solid #e5e7eb; background: #fff; border-radius: 6px; font-size: 13px; cursor: pointer; color: #374151; }
-.cat-btn:hover { border-color: #93c5fd; }
-.cat-btn.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+.cat-btn { padding: 7px 16px; border: 1px solid var(--border-color, #e5e7eb); background: var(--bg-card, #fff); border-radius: 6px; font-size: 13px; cursor: pointer; color: var(--text-main, #374151); transition: all 0.15s ease; }
+.cat-btn:hover { border-color: var(--border-focus, #059669); color: var(--accent-primary, #059669); }
+.cat-btn.active { background: var(--accent-primary, #059669); color: var(--text-inverse, #fff); border-color: var(--accent-primary, #059669); }
 .sub-nav { display: flex; gap: 6px; margin-bottom: 10px; }
-.sub-btn { padding: 5px 14px; border: 1px solid #e5e7eb; background: #fff; border-radius: 6px; font-size: 13px; cursor: pointer; color: #374151; }
-.sub-btn.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+.sub-btn { padding: 5px 14px; border: 1px solid var(--border-color, #e5e7eb); background: var(--bg-card, #fff); border-radius: 6px; font-size: 13px; cursor: pointer; color: var(--text-main, #374151); transition: all 0.15s ease; }
+.sub-btn:hover { border-color: var(--border-focus, #059669); color: var(--accent-primary, #059669); }
+.sub-btn.active { background: var(--accent-primary, #059669); color: var(--text-inverse, #fff); border-color: var(--accent-primary, #059669); }
 .sec-title { font-weight: 600; font-size: 14px; margin-bottom: 10px; color: #1f2937; }
 .grid-btns { display: flex; gap: 8px; flex-wrap: wrap; }
 .monkey-event-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px 14px; }

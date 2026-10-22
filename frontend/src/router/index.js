@@ -12,6 +12,7 @@ const routes = [
   { path: '/automation', name: 'automation', component: () => import('../views/Automation.vue') },
   { path: '/tracking', name: 'tracking', component: () => import('../views/Tracking.vue') },
   { path: '/adbtools', name: 'adbtools', component: () => import('../views/ADBTools.vue') },
+  { path: '/test-data', name: 'test-data', component: () => import('../views/TestData.vue') },
   { path: '/jmeter', name: 'jmeter', component: () => import('../views/JMeter.vue') },
   { path: '/apitest', name: 'apitest', component: () => import('../views/Hoppscotch.vue') },
   { path: '/releases', name: 'releases', component: () => import('../views/Releases.vue') },

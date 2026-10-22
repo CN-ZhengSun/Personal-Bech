@@ -25,6 +25,7 @@ DEFAULT_MENU = [
     {"menu_key": "/apitest", "name": "接口测试工具", "group_key": "test_tools", "is_group": False, "sort_order": 110},
     {"menu_key": "/tracking", "name": "埋点监控", "group_key": "test_tools", "is_group": False, "sort_order": 120},
     {"menu_key": "/adbtools", "name": "ADB 工具", "group_key": "test_tools", "is_group": False, "sort_order": 130},
+    {"menu_key": "/test-data", "name": "测试数据工厂", "group_key": "test_tools", "is_group": False, "sort_order": 132},
     {"menu_key": "/jmeter", "name": "JMeter 工具", "group_key": "test_tools", "is_group": False, "sort_order": 135},
     # 资产与 AI
     {"menu_key": None, "name": "资产与 AI", "group_key": "assets_ai", "is_group": True, "sort_order": 140},
@@ -44,10 +45,14 @@ class MenuRowIn(BaseModel):
 
 
 def _seed_defaults(db: Session) -> None:
-    """表为空时写入内置默认配置。"""
+    """首次写入默认配置，并为旧数据库补入新工具入口。"""
     if db.query(MenuConfig).count() == 0:
         for row in DEFAULT_MENU:
             db.add(MenuConfig(**row))
+        db.commit()
+    elif not db.query(MenuConfig).filter(MenuConfig.menu_key == "/test-data").first():
+        db.add(MenuConfig(menu_key="/test-data", name="测试数据工厂", group_key="test_tools",
+                          is_group=False, sort_order=132))
         db.commit()
 
 

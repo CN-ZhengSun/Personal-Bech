@@ -1,42 +1,184 @@
 <template>
-  <div class="layout" v-if="authed">
-    <aside class="sidebar" :class="{ collapsed }">
+  <div class="layout" :data-theme="currentTheme" v-if="authed">
+    <button v-if="mobileNavOpen" class="mobile-nav-backdrop" aria-label="关闭导航菜单" @click="mobileNavOpen = false"></button>
+    <!-- 侧边主导航栏（固定在左侧） -->
+    <aside id="main-navigation" class="sidebar" :class="{ collapsed, 'mobile-open': mobileNavOpen }">
       <div class="logo-row">
-        <div class="logo">🧪<span class="label">测试工作台</span></div>
-        <button class="collapse-btn" :title="collapsed ? '展开菜单' : '收起菜单'" @click="collapsed = !collapsed">{{ collapsed ? '»' : '«' }}</button>
+        <button class="logo-box" @click="goHome" title="返回 ADB 工具">
+          <span class="logo-emoji">🧪</span>
+          <div class="logo-text label">
+            <span class="logo-title">Personal-Bench</span>
+            <span class="logo-sub">测试工作台</span>
+          </div>
+        </button>
+        <button
+          class="collapse-btn"
+          :title="collapsed ? '展开侧边菜单' : '收起侧边菜单'"
+          @click="toggleSidebar"
+        >
+          <span v-if="collapsed">»</span>
+          <span v-else>«</span>
+        </button>
       </div>
+
+      <!-- 导航列表 -->
       <nav class="menu">
         <template v-for="group in menuGroups" :key="group.key">
-          <div class="group"><span class="label">{{ group.name }}</span></div>
-          <RouterLink v-for="item in group.items" :key="item.path" :to="item.path" class="item"><span class="label">{{ item.name }}</span></RouterLink>
+          <div class="group-title">
+            <span class="group-text label">{{ group.name }}</span>
+            <span class="group-line" v-if="collapsed"></span>
+          </div>
+          <RouterLink
+            v-for="item in group.items"
+            :key="item.path"
+            :to="item.path"
+            class="menu-item"
+            :title="collapsed ? item.name : ''"
+            @click="mobileNavOpen = false"
+          >
+            <span class="item-icon">{{ getMenuIcon(item.path, item.name) }}</span>
+            <span class="item-name label">{{ item.name }}</span>
+          </RouterLink>
         </template>
       </nav>
+
+      <!-- 底部系统信息 -->
+      <div class="sidebar-foot" v-if="!collapsed">
+        <span class="foot-tag">个人测试工作台</span>
+      </div>
     </aside>
-    <main class="content">
+
+    <!-- 主视口区域（位于左侧栏右侧） -->
+    <div class="main-viewport">
+      <!-- 顶部全局导航栏 -->
       <header class="topbar">
-        <span class="user">{{ user.display_name || user.username }}（{{ roleText }}）</span>
-        <button class="btn btn-small btn-gray" @click="showPassword = true">修改密码</button>
-        <button class="btn btn-small" @click="logout">退出登录</button>
+        <div class="topbar-left">
+          <button class="mobile-nav-toggle" type="button" aria-label="打开导航菜单" aria-controls="main-navigation" :aria-expanded="mobileNavOpen" @click="mobileNavOpen = true">☰</button>
+          <div class="breadcrumb-trail">
+            <span class="crumb-home">🏠</span>
+            <span class="crumb-group" v-if="currentGroupTitle">{{ currentGroupTitle }}</span>
+            <span class="crumb-sep" v-if="currentGroupTitle">/</span>
+            <span class="crumb-page">{{ currentPageTitle }}</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- 5种风格主题切换器 -->
+          <div class="theme-dropdown-wrap" ref="themeDropdownRef">
+            <button
+              class="theme-toggle-btn"
+              @click="toggleThemeMenu"
+              title="切换界面风格主题（共 5 种）"
+              :aria-expanded="isThemeMenuOpen"
+              aria-controls="theme-options"
+            >
+              <span class="theme-swatch" :style="{ background: activeThemeObj.primary }"></span>
+              <span class="theme-label">{{ activeThemeObj.name }}</span>
+              <span class="theme-badge-mini" v-if="activeThemeObj.badge">{{ activeThemeObj.badge }}</span>
+              <span class="theme-arrow">▾</span>
+            </button>
+
+            <!-- 主题切换下拉浮层 -->
+            <div id="theme-options" class="theme-menu-popover" v-if="isThemeMenuOpen">
+              <div class="popover-head">
+                <span class="popover-title">界面风格切换</span>
+                <span class="popover-desc">5 种精心调配风格</span>
+              </div>
+              <div class="theme-list">
+                <button
+                  v-for="th in THEMES"
+                  :key="th.id"
+                  type="button"
+                  class="theme-card-option"
+                  :class="{ active: currentTheme === th.id }"
+                  @click="onSelectTheme(th.id)"
+                  :aria-pressed="currentTheme === th.id"
+                >
+                  <div class="swatch-circle" :style="{ background: th.primary }">
+                    <span class="check-mark" v-if="currentTheme === th.id">✓</span>
+                  </div>
+                  <div class="theme-detail">
+                    <div class="theme-row-top">
+                      <span class="theme-opt-name">{{ th.name }}</span>
+                      <span class="theme-opt-badge" v-if="th.badge">{{ th.badge }}</span>
+                    </div>
+                    <span class="theme-opt-desc">{{ th.tagline }}</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 用户身份胶囊 -->
+          <div class="user-chip" :title="'当前登录：' + (user.display_name || user.username)">
+            <span class="user-avatar">{{ (user.display_name || user.username || '用')[0]?.toUpperCase() }}</span>
+            <div class="user-meta">
+              <span class="user-name">{{ user.display_name || user.username || '用户' }}</span>
+              <span class="user-role">{{ roleText }}</span>
+            </div>
+          </div>
+
+          <!-- 修改密码 -->
+          <button class="top-action-btn" @click="showPassword = true" title="修改当前账户密码">
+            修改密码
+          </button>
+
+          <!-- 退出登录 -->
+          <button class="top-action-btn btn-logout" @click="logout" title="退出并清理登录会话">
+            退出登录
+          </button>
+        </div>
       </header>
-      <RouterView v-slot="{ Component }">
-        <KeepAlive :max="30">
-          <component :is="Component" :key="pageKey" />
-        </KeepAlive>
-      </RouterView>
-    </main>
+
+      <!-- 核心页面视图渲染容器 -->
+      <main class="content">
+        <RouterView v-slot="{ Component }">
+          <KeepAlive :max="30">
+            <component :is="Component" :key="pageKey" />
+          </KeepAlive>
+        </RouterView>
+      </main>
+    </div>
+
+    <!-- 修改密码弹窗 -->
     <div v-if="showPassword" class="modal-mask" @click.self="showPassword = false">
-      <div class="modal" style="width:380px">
-        <h3>修改管理员密码</h3>
-        <div class="field"><label>当前密码</label><input v-model="passwordForm.current_password" type="password" /></div>
-        <div class="field"><label>新密码（至少 8 位）</label><input v-model="passwordForm.new_password" type="password" /></div>
-        <div class="field"><label>确认新密码</label><input v-model="passwordConfirm" type="password" /></div>
+      <div class="modal" style="width: 400px">
+        <h3>修改账户密码</h3>
+        <div class="field">
+          <label>当前密码</label>
+          <input
+            v-model="passwordForm.current_password"
+            type="password"
+            placeholder="请输入当前密码"
+            autocomplete="current-password"
+          />
+        </div>
+        <div class="field">
+          <label>新密码（至少 8 位）</label>
+          <input
+            v-model="passwordForm.new_password"
+            type="password"
+            placeholder="请输入 8 位以上新密码"
+            autocomplete="new-password"
+          />
+        </div>
+        <div class="field">
+          <label>确认新密码</label>
+          <input
+            v-model="passwordConfirm"
+            type="password"
+            placeholder="请再次输入新密码"
+            autocomplete="new-password"
+          />
+        </div>
         <div class="actions">
           <button class="btn btn-gray" @click="showPassword = false">取消</button>
-          <button class="btn" @click="changePassword">保存</button>
+          <button class="btn" @click="changePassword">确认修改</button>
         </div>
       </div>
     </div>
   </div>
+
   <RouterView v-else />
 </template>
 
@@ -44,6 +186,7 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { authApi, menuApi } from './api'
+import { THEMES, getCurrentTheme, applyTheme } from './utils/theme'
 
 const router = useRouter()
 const route = useRoute()
@@ -53,17 +196,50 @@ const showPassword = ref(false)
 const collapsed = ref(localStorage.getItem('twb_sidebar_collapsed') === '1')
 const passwordForm = ref({ current_password: '', new_password: '' })
 const passwordConfirm = ref('')
-// 会话版本号：退出登录时 +1，使已缓存页面状态失效（同一登录会话内切换页面状态保留）
+
+// 主题管理
+const currentTheme = ref(getCurrentTheme())
+const isThemeMenuOpen = ref(false)
+const themeDropdownRef = ref(null)
+const mobileNavOpen = ref(false)
+
+const activeThemeObj = computed(() => {
+  return THEMES.find(t => t.id === currentTheme.value) || THEMES[0]
+})
+
+function toggleThemeMenu() {
+  isThemeMenuOpen.value = !isThemeMenuOpen.value
+}
+
+function onSelectTheme(themeId) {
+  currentTheme.value = applyTheme(themeId)
+  isThemeMenuOpen.value = false
+  window.$toast.success(`已切换风格：${activeThemeObj.value.name}`)
+}
+
+function handleOutsideClick(e) {
+  if (themeDropdownRef.value && !themeDropdownRef.value.contains(e.target)) {
+    isThemeMenuOpen.value = false
+  }
+}
+
+function handleEscape(e) {
+  if (e.key === 'Escape') {
+    isThemeMenuOpen.value = false
+    mobileNavOpen.value = false
+  }
+}
+
+// 会话版本号：退出登录时 +1，使已缓存页面状态失效
 const sessionTick = ref(0)
-// 项目切换版本号：任一页面内切换项目（localStorage twb_project）后 +1，重建组件拉取新项目数据
+// 项目切换版本号：任一页面内切换项目后 +1，重建组件拉取新项目数据
 const projectTick = ref(0)
 function onProjectChanged() { projectTick.value++ }
 function onStorageProject(e) { if (e.key === 'twb_project') projectTick.value++ }
-// 页面缓存键：路由路径 + 项目版本 + 会话版本。切项目或重新登录时重建组件拉取新数据
 const pageKey = computed(() => `${route.path}|${projectTick.value}|${sessionTick.value}`)
 
 const roleMap = { admin: '管理员', manager: '测试负责人', tester: '测试工程师', dev: '开发', viewer: '只读' }
-const roleText = computed(() => roleMap[user.value.role] || user.value.role)
+const roleText = computed(() => roleMap[user.value.role] || user.value.role || '工程师')
 
 // ---------- 菜单（后端配置驱动，失败时回退内置默认） ----------
 const DEFAULT_MENU = [
@@ -73,12 +249,79 @@ const DEFAULT_MENU = [
     { path: '/projects', name: '项目管理' }, { path: '/report', name: '质量报表' },
     { path: '/automation', name: '自动化脚本' }, { path: '/releases', name: '版本与环境' } ] },
   { key: 'test_tools', name: '测试工具', items: [
-    { path: '/apitest', name: '接口测试工具' }, { path: '/tracking', name: '埋点监控' }, { path: '/adbtools', name: 'ADB 工具' } ] },
+    { path: '/apitest', name: '接口测试工具' }, { path: '/tracking', name: '埋点监控' },
+    { path: '/adbtools', name: 'ADB 工具' }, { path: '/test-data', name: '测试数据工厂' } ] },
   { key: 'assets_ai', name: '资产与 AI', items: [
     { path: '/knowledge', name: '知识库' }, { path: '/skills', name: 'SKILL 管理' },
     { path: '/ai', name: 'AI 模型配置' }, { path: '/menu-manage', name: '菜单管理' } ] }
 ]
 const menuGroups = ref(DEFAULT_MENU)
+
+const menuIcons = {
+  '/workbench': '📊',
+  '/requirements': '📝',
+  '/cases': '🧪',
+  '/plans': '📅',
+  '/executions': '▶️',
+  '/bugs': '🐞',
+  '/projects': '📁',
+  '/report': '📈',
+  '/automation': '⚡',
+  '/releases': '🏷️',
+  '/apitest': '🔌',
+  '/tracking': '📡',
+  '/adbtools': '📱',
+  '/test-data': '🧰',
+  '/jmeter': '⏱️',
+  '/knowledge': '📚',
+  '/skills': '💡',
+  '/ai': '🤖',
+  '/menu-manage': '⚙️'
+}
+
+function getMenuIcon(path, name) {
+  if (menuIcons[path]) return menuIcons[path]
+  if (name.includes('工作台')) return '📊'
+  if (name.includes('PRD') || name.includes('需求')) return '📝'
+  if (name.includes('用例')) return '🧪'
+  if (name.includes('计划')) return '📅'
+  if (name.includes('执行')) return '▶️'
+  if (name.includes('缺陷')) return '🐞'
+  if (name.includes('接口') || name.includes('API')) return '🔌'
+  if (name.includes('埋点')) return '📡'
+  if (name.includes('ADB')) return '📱'
+  if (name.includes('AI')) return '🤖'
+  return '📄'
+}
+
+// 面包屑计算
+const currentGroupTitle = computed(() => {
+  for (const g of menuGroups.value) {
+    if (g.items.some(i => i.path === route.path)) {
+      return g.name
+    }
+  }
+  return ''
+})
+
+const currentPageTitle = computed(() => {
+  for (const g of menuGroups.value) {
+    const item = g.items.find(i => i.path === route.path)
+    if (item) return item.name
+  }
+  return route.name || '页面'
+})
+
+function toggleSidebar() {
+  collapsed.value = !collapsed.value
+}
+
+function goHome() {
+  mobileNavOpen.value = false
+  router.push('/adbtools')
+}
+
+watch(() => route.path, () => { mobileNavOpen.value = false; isThemeMenuOpen.value = false })
 
 async function loadMenu() {
   try {
@@ -94,7 +337,7 @@ async function loadMenu() {
       }
     }
     if (groups.length && groups.some(g => g.items.length)) menuGroups.value = groups
-  } catch { /* 拉取失败时保持内置默认菜单 */ }
+  } catch { /* 保持默认 */ }
 }
 
 function onMenuChanged() { loadMenu() }
@@ -105,12 +348,10 @@ function loadUser() {
   try { user.value = JSON.parse(localStorage.getItem('twb_user') || '{}') } catch { user.value = {} }
 }
 
-async function loadProjects() {
-  /* 项目选择器已移入各测试管理页面（ProjectSelect 组件），App 不再维护项目列表 */
-}
+async function loadProjects() {}
 
 async function logout() {
-  try { await authApi.logout() } catch { /* 本地服务异常时仍清理页面状态 */ }
+  try { await authApi.logout() } catch {}
   sessionTick.value++
   authed.value = false
   localStorage.removeItem('twb_authenticated')
@@ -149,73 +390,22 @@ async function bootstrap() {
   }
 }
 
-onMounted(() => { loadUser(); bootstrap(); loadMenu(); window.addEventListener('twb-menu-changed', onMenuChanged); window.addEventListener('twb-project-changed', onProjectChanged); window.addEventListener('storage', onStorageProject) })
-onUnmounted(() => { window.removeEventListener('twb-menu-changed', onMenuChanged); window.removeEventListener('twb-project-changed', onProjectChanged); window.removeEventListener('storage', onStorageProject) })
-</script>
+onMounted(() => {
+  loadUser()
+  bootstrap()
+  loadMenu()
+  window.addEventListener('twb-menu-changed', onMenuChanged)
+  window.addEventListener('twb-project-changed', onProjectChanged)
+  window.addEventListener('storage', onStorageProject)
+  document.addEventListener('click', handleOutsideClick)
+  document.addEventListener('keydown', handleEscape)
+})
 
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-select { font-family: inherit; }
-body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; background: #f5f6f8; color: #1f2329; }
-.layout { display: flex; min-height: 100vh; }
-.sidebar { width: 176px; background: #1e293b; color: #fff; padding: 12px 0; flex-shrink: 0; display: flex; flex-direction: column; transition: width .18s ease; overflow: hidden; }
-.sidebar.collapsed { width: 46px; }
-.logo-row { display: flex; align-items: center; justify-content: space-between; padding: 0 10px 12px; }
-.logo { font-size: 15px; font-weight: 600; white-space: nowrap; }
-.collapse-btn { flex-shrink: 0; width: 24px; height: 24px; border: none; border-radius: 6px; background: #334155; color: #cbd5e1; font-size: 12px; cursor: pointer; line-height: 1; }
-.collapse-btn:hover { background: #475569; color: #fff; }
-.sidebar.collapsed .logo-row { justify-content: center; padding: 0 0 12px; }
-.sidebar.collapsed .label { display: none; }
-.proj { padding: 0 12px 12px; }
-.proj select { width: 100%; padding: 6px 8px; border-radius: 6px; border: none; background: #334155; color: #fff; font-size: 13px; }
-.menu { flex: 1; overflow-y: auto; }
-.group { padding: 10px 20px 4px; font-size: 12px; color: #64748b; white-space: nowrap; }
-.sidebar.collapsed .group { padding: 12px 0 4px; text-align: center; }
-.item { display: flex; align-items: center; padding: 8px 20px; color: #cbd5e1; text-decoration: none; font-size: 14px; white-space: nowrap; }
-.sidebar.collapsed .item { justify-content: center; padding: 9px 0; }
-.item:hover { background: #334155; color: #fff; }
-.item.router-link-active { background: #2563eb; color: #fff; }
-.content { flex: 1; padding: 20px 24px; overflow-x: hidden; }
-.topbar { display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-bottom: 16px; }
-.user { font-size: 13px; color: #64748b; }
-.card { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 16px; }
-h1 { font-size: 20px; margin-bottom: 14px; }
-.btn { padding: 7px 14px; background: #2563eb; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; }
-.btn:hover { background: #1d4ed8; }
-.btn-small { padding: 5px 12px; font-size: 12px; }
-.btn-danger { background: #dc2626; }
-.btn-danger:hover { background: #b91c1c; }
-.btn-gray { background: #64748b; }
-.btn-gray:hover { background: #475569; }
-.form-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
-.form-row input, .form-row select, .form-row textarea { padding: 7px 10px; border: 1px solid #d0d7de; border-radius: 6px; font-size: 13px; }
-.form-row input, .form-row select { min-width: 120px; }
-.form-row textarea { width: 100%; min-height: 80px; font-family: inherit; }
-.table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.table th, .table td { text-align: left; padding: 9px 10px; border-bottom: 1px solid #eef1f4; }
-.table th { background: #f8fafc; font-weight: 600; white-space: nowrap; }
-.table tr:hover td { background: #f8fafc; }
-.muted { color: #8896a7; font-size: 13px; }
-.tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; }
-.tag-green { background: #ecfdf5; color: #059669; }
-.tag-red { background: #fef2f2; color: #dc2626; }
-.tag-orange { background: #fff7ed; color: #ea580c; }
-.tag-blue { background: #eff6ff; color: #2563eb; }
-.tag-gray { background: #f1f5f9; color: #64748b; }
-.tag-purple { background: #f5f3ff; color: #7c3aed; }
-.tag-yellow { background: #fefce8; color: #ca8a04; }
-.modal-mask { position: fixed; inset: 0; background: rgba(0,0,0,.4); display: flex; align-items: center; justify-content: center; z-index: 100; }
-.modal { background: #fff; border-radius: 10px; padding: 20px; width: 520px; max-width: 92vw; max-height: 88vh; overflow-y: auto; }
-.modal h3 { margin-bottom: 14px; }
-.modal .field { margin-bottom: 10px; }
-.modal .field label { display: block; font-size: 13px; color: #64748b; margin-bottom: 4px; }
-.modal .field input, .modal .field select, .modal .field textarea { width: 100%; padding: 7px 10px; border: 1px solid #d0d7de; border-radius: 6px; font-size: 13px; }
-.modal .field textarea { min-height: 70px; font-family: inherit; }
-.modal .actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-.stat-card { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-.stat-card .num { font-size: 26px; font-weight: 700; }
-.stat-card .lbl { font-size: 12px; color: #8896a7; margin-top: 4px; }
-.bar { height: 8px; background: #eef1f4; border-radius: 4px; overflow: hidden; margin-top: 6px; }
-.bar > div { height: 100%; background: #2563eb; }
-</style>
+onUnmounted(() => {
+  window.removeEventListener('twb-menu-changed', onMenuChanged)
+  window.removeEventListener('twb-project-changed', onProjectChanged)
+  window.removeEventListener('storage', onStorageProject)
+  document.removeEventListener('click', handleOutsideClick)
+  document.removeEventListener('keydown', handleEscape)
+})
+</script>

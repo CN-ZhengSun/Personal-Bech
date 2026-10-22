@@ -24,6 +24,7 @@ from app.api.v1 import (
     releases,
     requirements,
     tracking,
+    test_data,
     upload,
 )
 from app.api.v1.tracking import ws_router as tracking_ws_router
@@ -125,6 +126,7 @@ for r in (
     dashboard.router,
     upload.router,
     tracking.router,
+    test_data.router,
     adbtools.router,
     apitest.router,
 ):

@@ -35,12 +35,26 @@ onMounted(load)
 
 <style scoped>
 .project-picker {
-  min-width: 180px;
-  padding: 7px 10px;
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
+  min-width: 170px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 7px;
   font-size: 13px;
-  background: #fff;
-  color: #1e293b;
+  font-weight: 500;
+  background: var(--bg-card);
+  color: var(--text-main);
+  outline: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.project-picker:hover {
+  border-color: var(--border-focus);
+}
+
+.project-picker:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-ring);
 }
 </style>

@@ -5,11 +5,13 @@ import socket
 import subprocess
 import time
 import os
+import urllib.request
 
 BACKEND = r"D:\Test-Bench\backend\.venv\Scripts\python.exe"
 BACKEND_DIR = r"D:\Test-Bench\backend"
 FRONTEND_DIR = r"D:\Test-Bench\frontend"
 LOG_DIR = r"D:\Test-Bench\logs"
+START_SCRIPT = r"D:\Test-Bench\start-services.ps1"
 os.makedirs(LOG_DIR, exist_ok=True)
 
 _LOCK_PORT = 8755
@@ -48,6 +50,27 @@ def port_open(port):
             s.close()
         except OSError:
             pass
+
+
+def backend_healthy():
+    """确认后端不仅占用端口，而且能完成一次真实请求。"""
+    try:
+        with urllib.request.urlopen("http://127.0.0.1:8000/health", timeout=3) as response:
+            return response.status == 200
+    except (OSError, TimeoutError):
+        return False
+
+
+def recover_backend():
+    """交给启动脚本校验并只清理本项目的异常后端进程。"""
+    subprocess.run(
+        ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", START_SCRIPT],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        timeout=15,
+        creationflags=subprocess.CREATE_NO_WINDOW,
+        check=False,
+    )
 
 
 _last_start = {"backend": 0.0, "frontend": 0.0}
@@ -105,9 +128,13 @@ if __name__ == "__main__":
     log("watchdog 启动")
     while True:
         try:
-            if not port_open(8000):
-                log("检测到 8000 DOWN，拉起后端")
-                start_backend()
+            if not backend_healthy():
+                if port_open(8000):
+                    log("检测到后端无响应，执行受限恢复")
+                    recover_backend()
+                else:
+                    log("检测到 8000 DOWN，拉起后端")
+                    start_backend()
             if not port_open(5173):
                 log("检测到 5173 DOWN，拉起前端")
                 start_frontend()

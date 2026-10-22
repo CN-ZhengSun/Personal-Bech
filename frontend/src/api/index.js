@@ -168,6 +168,17 @@ export const adbApi = {
   setSettings: (save_dir) => http.post('/adb/settings', { save_dir }),
   browseDir: (path) => http.get('/adb/browse', { params: { path } })
 }
+
+export const testDataApi = {
+  capabilities: () => http.get('/test-data/capabilities'),
+  plan: (spec) => http.post('/test-data/plan', spec),
+  jobs: () => http.get('/test-data/jobs'),
+  job: (id) => http.get(`/test-data/jobs/${id}`),
+  start: (spec, confirmation_text = '') => http.post('/test-data/jobs', { spec, confirmation_text }),
+  stop: (id) => http.post(`/test-data/jobs/${id}/stop`),
+  manifestUrl: (id) => `/api/v1/test-data/jobs/${id}/manifest`
+}
+
 export const apiTestApi = {
   cases: (projectId, keyword) => http.get('/apitest/cases', { params: { project_id: projectId, keyword } }),
   createCase: (d) => http.post('/apitest/cases', d),

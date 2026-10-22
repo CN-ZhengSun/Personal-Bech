@@ -99,32 +99,104 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.fs { position: relative; display: inline-block; min-width: 120px; font-family: inherit; font-size: 13px; }
-.fs-box {
-  display: flex; align-items: center; justify-content: space-between; gap: 6px;
-  padding: 7px 10px; height: 34px; border: 1px solid #d0d7de; border-radius: 6px;
-  font-size: 13px; font-family: inherit; line-height: normal; background: #fff;
-  cursor: pointer; user-select: none; box-sizing: border-box;
+.fs {
+  position: relative;
+  display: inline-block;
+  min-width: 120px;
+  font-family: inherit;
+  font-size: 13px;
 }
-.fs-box:hover { border-color: #93c5fd; }
-.fs-text { color: #334155; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.fs-ph { color: #94a3b8; }
-.fs-caret { color: #94a3b8; font-size: 11px; }
+.fs-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 0 10px;
+  height: 34px;
+  border: 1px solid var(--border-color);
+  border-radius: 7px;
+  font-size: 13px;
+  font-family: inherit;
+  line-height: normal;
+  background: var(--bg-card);
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+.fs-box:hover {
+  border-color: var(--border-focus);
+}
+.fs-text {
+  color: var(--text-main);
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fs-ph {
+  color: var(--text-muted);
+}
+.fs-caret {
+  color: var(--text-muted);
+  font-size: 11px;
+}
 .fs-input {
-  border: none; outline: none; width: 100%; font-size: 13px; font-family: inherit;
-  padding: 0; margin: 0; background: transparent; color: #334155; box-sizing: border-box;
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 13px;
+  font-family: inherit;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  color: var(--text-main);
+  box-sizing: border-box;
 }
 .fs-menu {
-  position: absolute; top: calc(100% + 4px); left: 0; z-index: 30;
-  min-width: 100%; max-height: 220px; overflow-y: auto;
-  background: #fff; border: 1px solid #e2e8f0; border-radius: 6px;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, .12);
-  font-family: inherit; font-size: 13px;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 30;
+  min-width: 100%;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: var(--shadow-elevated);
+  font-family: inherit;
+  font-size: 13px;
 }
-.fs-item { padding: 7px 12px; font-size: 13px; font-family: inherit; color: #334155; cursor: pointer; white-space: nowrap; }
-.fs-item:hover { background: #eff6ff; color: #2563eb; }
-.fs-item.fs-active { background: #eff6ff; color: #2563eb; font-weight: 600; }
-.fs-item.fs-clear { color: #94a3b8; border-bottom: 1px solid #f1f5f9; }
-.fs-item.fs-clear:hover { background: #f8fafc; color: #64748b; }
-.fs-empty { padding: 8px 12px; font-size: 12px; color: #94a3b8; }
+.fs-item {
+  padding: 7px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--text-main);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.12s ease;
+}
+.fs-item:hover {
+  background: var(--accent-light);
+  color: var(--accent-primary);
+}
+.fs-item.fs-active {
+  background: var(--accent-light);
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+.fs-item.fs-clear {
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.fs-item.fs-clear:hover {
+  background: var(--bg-card-subtle);
+  color: var(--text-main);
+}
+.fs-empty {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
 </style>

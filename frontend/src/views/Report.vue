@@ -110,18 +110,18 @@ watch(() => localStorage.getItem('twb_project'), load)
 
 <style scoped>
 .row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-h3 { font-size: 15px; }
+h3 { font-size: 15px; color: var(--text-heading); }
 .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.card-head select { padding: 5px 8px; border: 1px solid #d0d7de; border-radius: 6px; font-size: 13px; }
+.card-head select { padding: 6px 10px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 13px; background: var(--bg-card); color: var(--text-main); outline: none; }
 .pie-wrap { position: relative; width: 220px; margin: 0 auto; }
 .pie-svg { width: 220px; height: 220px; display: block; }
 .pie-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
-.pie-total { font-size: 30px; font-weight: 700; color: #1e293b; }
-.pie-total-lbl { font-size: 12px; color: #64748b; }
+.pie-total { font-size: 30px; font-weight: 700; color: var(--text-heading); font-variant-numeric: tabular-nums; }
+.pie-total-lbl { font-size: 12px; color: var(--text-muted); }
 .pie-legend { margin-top: 16px; max-width: 320px; margin-left: auto; margin-right: auto; }
 .legend-row { display: flex; align-items: center; gap: 10px; padding: 4px 0; font-size: 13px; }
-.dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-.legend-name { width: 56px; color: #334155; }
-.legend-val { flex: 1; text-align: right; color: #475569; font-weight: 600; }
-.legend-pct { width: 48px; text-align: right; color: #94a3b8; }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.legend-name { width: 60px; color: var(--text-main); }
+.legend-val { flex: 1; text-align: right; color: var(--text-heading); font-weight: 600; font-variant-numeric: tabular-nums; }
+.legend-pct { width: 48px; text-align: right; color: var(--text-muted); font-variant-numeric: tabular-nums; }
 </style>

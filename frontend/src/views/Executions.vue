@@ -622,9 +622,9 @@ onBeforeUnmount(() => window.removeEventListener('resize', computeAttachShown))
 .detail-cols { display: flex; gap: 18px; align-items: flex-start; }
 .detail-info { flex: 1; min-width: 0; }
 .detail-steps { flex: 1; min-width: 0; }
-.detail-title { font-size: 16px; font-weight: 600; color: #111827; line-height: 1.4; margin-bottom: 8px; }
+.detail-title { font-size: 16px; font-weight: 600; color: var(--text-heading, #111827); line-height: 1.4; margin-bottom: 8px; }
 .detail-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; }
 .detail-grid2 > div { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
-.detail-grid2 .fv { font-size: 13px; color: #374151; word-break: break-all; }
-.detail-expected { background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px 10px; white-space: pre-wrap; word-break: break-all; font-size: 13px; }
+.detail-grid2 .fv { font-size: 13px; color: var(--text-main, #374151); word-break: break-all; }
+.detail-expected { background: var(--bg-card, #fff); border: 1px solid var(--border-color, #e5e7eb); border-radius: 6px; padding: 8px 10px; white-space: pre-wrap; word-break: break-all; font-size: 13px; color: var(--text-main); }
 </style>
