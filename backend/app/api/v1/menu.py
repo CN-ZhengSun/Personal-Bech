@@ -26,7 +26,7 @@ DEFAULT_MENU = [
     {"menu_key": "/tracking", "name": "埋点监控", "group_key": "test_tools", "is_group": False, "sort_order": 120},
     {"menu_key": "/adbtools", "name": "ADB 工具", "group_key": "test_tools", "is_group": False, "sort_order": 130},
     {"menu_key": "/test-data", "name": "测试数据工厂", "group_key": "test_tools", "is_group": False, "sort_order": 132},
-    {"menu_key": "/jmeter", "name": "JMeter 工具", "group_key": "test_tools", "is_group": False, "sort_order": 135},
+    {"menu_key": "/jmeter", "name": "性能测试", "group_key": "test_tools", "is_group": False, "sort_order": 135},
     # 资产与 AI
     {"menu_key": None, "name": "资产与 AI", "group_key": "assets_ai", "is_group": True, "sort_order": 140},
     {"menu_key": "/knowledge", "name": "知识库", "group_key": "assets_ai", "is_group": False, "sort_order": 150},
@@ -50,7 +50,12 @@ def _seed_defaults(db: Session) -> None:
         for row in DEFAULT_MENU:
             db.add(MenuConfig(**row))
         db.commit()
-    elif not db.query(MenuConfig).filter(MenuConfig.menu_key == "/test-data").first():
+
+    old_jmeter = db.query(MenuConfig).filter(MenuConfig.menu_key == "/jmeter", MenuConfig.name == "JMeter 工具").first()
+    if old_jmeter:
+        old_jmeter.name = "性能测试"
+        db.commit()
+    if not db.query(MenuConfig).filter(MenuConfig.menu_key == "/test-data").first():
         db.add(MenuConfig(menu_key="/test-data", name="测试数据工厂", group_key="test_tools",
                           is_group=False, sort_order=132))
         db.commit()

@@ -43,3 +43,6 @@ tools/
 
 # 附件上传目录
 uploads/
+
+# JMeter scripts, results and reports
+backend/runtime/

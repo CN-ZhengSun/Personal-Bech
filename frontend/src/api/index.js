@@ -244,7 +244,14 @@ export const menuApi = {
 
 // ---------- JMeter 工具 ----------
 export const jmeterApi = {
-  launch: () => http.post('/jmeter/launch')
+  capabilities: () => http.get('/jmeter/capabilities'),
+  scripts: (projectId) => http.get('/jmeter/scripts', { params: { project_id: projectId } }),
+  upload: (data) => http.post('/jmeter/scripts', data),
+  scenario: (data) => http.post('/jmeter/scenarios', data),
+  runs: (projectId) => http.get('/jmeter/runs', { params: { project_id: projectId } }),
+  start: (data) => http.post('/jmeter/runs', data),
+  stop: (id) => http.post(`/jmeter/runs/${id}/stop`),
+  log: (id) => http.get(`/jmeter/runs/${id}/log`, { responseType: 'text' })
 }
 
 // ---------- AI ----------

@@ -184,7 +184,7 @@ npm run dev
 | 基础设施 | Docker Desktop + MySQL 8.0（容器 `testworkbench-mysql`） | 业务数据库，127.0.0.1:3306 |
 | 后端 | Python 3.10+ / FastAPI / uvicorn | 业务后端（`backend\.venv`） |
 | 前端 | Node.js / Vue3 / Vite | 前端（`frontend`） |
-| 集成工具 | JMeter 5.6.3 汉化版（`tools\apache-jmeter-5.6.3`） | 「JMeter 工具」点击本地启动，依赖系统 Java 8+ 与 `JMETER_HOME` |
+| 集成工具 | JMeter 5.6.3 汉化版（`tools\apache-jmeter-5.6.3`） | 「性能测试」页面管理与 CLI 后台执行，依赖 Java 与 `JMETER_HOME` |
 | 集成工具 | Hoppscotch（容器 3000/3100/3170）+ Proxyscotch（9159）+ PostgreSQL（5432） | 「API测试」iframe 内嵌接口调试工具 |
 | Android | adb（platform-tools）＋ aapt2/aapt（SDK build-tools） | ADB 工具 / 埋点监控 / APK 包名解析 |
 | 守护 | `watchdog.py`（锁 8755） | 每 20s 检查后端 8000 / 前端 5173，挂了自动拉起；`start-services.ps1` 手动启动 |
@@ -228,3 +228,7 @@ npm run dev
   - 日志分析：多视图标签页/缓冲区选择(all/main/system/events/crash)/暂停与恢复/查询过滤（关键词 AND、tag:、level:）/清屏/历史收藏/全屏
   - 实用工具：快捷截图、高清录屏（时长/分辨率/自定义文件名，自动拉取到平台并清理设备文件）、自定义 ADB 命令、北京时间→13位时间戳转换
   - Monkey 测试：目标包名/事件数/节流/事件占比（触摸/滑动/导航/主要导航）/忽略崩溃与超时
+
+### JMeter 性能测试（集成首版）
+
+「测试工具 → 性能测试」支持网页创建 HTTP GET 场景或导入 JMX/CSV、配置并发和时长、后台执行/停止、查看采样指标和历史、内嵌 HTML 报告及下载结果。先选择当前项目；默认本机健康接口仅用于体验。配置范围、脚本适配方式、数据迁移和信任边界见 [JMeter 集成说明](docs/JMeter集成.md)。
