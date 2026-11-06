@@ -74,7 +74,7 @@ def list_menu_config(db: Session = Depends(get_db)):
             "is_group": r.is_group,
             "sort_order": r.sort_order,
         }
-        for r in rows
+        for r in rows if r.menu_key != "/api-workspace"
     ]
 
 

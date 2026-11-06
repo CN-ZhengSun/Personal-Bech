@@ -1,5 +1,10 @@
 <template>
-  <div class="layout" :data-theme="currentTheme" v-if="authed">
+  <DesignPreview v-if="authed && (interfaceMode === 'new' || route.path === '/design-preview')" :menu-groups="menuGroups" integrated @switch-legacy="setInterfaceMode('old')">
+    <template v-if="route.path !== '/design-preview'" #default>
+      <RouterView v-slot="{ Component }"><KeepAlive :max="30"><component :is="Component" :key="pageKey" /></KeepAlive></RouterView>
+    </template>
+  </DesignPreview>
+  <div class="layout" :data-theme="currentTheme" v-else-if="authed">
     <button v-if="mobileNavOpen" class="mobile-nav-backdrop" aria-label="关闭导航菜单" @click="mobileNavOpen = false"></button>
     <!-- 侧边主导航栏（固定在左侧） -->
     <aside id="main-navigation" class="sidebar" :class="{ collapsed, 'mobile-open': mobileNavOpen }">
@@ -63,6 +68,7 @@
         </div>
 
         <div class="topbar-right">
+          <button class="top-action-btn" @click="setInterfaceMode('new')">体验新版界面 ↗</button>
           <!-- 5种风格主题切换器 -->
           <div class="theme-dropdown-wrap" ref="themeDropdownRef">
             <button
@@ -186,8 +192,15 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { authApi, menuApi } from './api'
+import DesignPreview from './views/DesignPreview.vue'
 import { THEMES, getCurrentTheme, applyTheme } from './utils/theme'
 
+const interfaceMode = ref(localStorage.getItem('twb_interface_mode') || 'old')
+function setInterfaceMode(mode) {
+  interfaceMode.value = mode
+  localStorage.setItem('twb_interface_mode', mode)
+  if(mode === 'old' && route.path === '/design-preview') router.push('/adbtools')
+}
 const router = useRouter()
 const route = useRoute()
 const authed = ref(!!localStorage.getItem('twb_authenticated'))
@@ -333,7 +346,7 @@ async function loadMenu() {
         cur = { key: row.group_key, name: row.name, items: [] }
         groups.push(cur)
       } else if (cur) {
-        cur.items.push({ path: row.menu_key, name: row.name })
+        if (row.menu_key !== '/api-workspace') cur.items.push({ path: row.menu_key, name: row.name })
       }
     }
     if (groups.length && groups.some(g => g.items.length)) menuGroups.value = groups

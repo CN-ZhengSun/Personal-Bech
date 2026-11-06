@@ -1,0 +1,71 @@
+/* Scoped to the new shell: legacy screens keep their original styling. */
+.design .business-page {
+  --bg-canvas:var(--bg);--bg-card:var(--surface);--bg-card-subtle:var(--bg);--bg-card-hover:var(--hover);
+  --text-main:var(--ink);--text-heading:var(--ink);--text-muted:var(--muted);--text-secondary:var(--muted);
+  --border-color:var(--line);--border-subtle:var(--line);--border-focus:var(--accent);
+  --primary:var(--accent);--primary-hover:#315b74;--primary-light:var(--hover);--accent-color:var(--accent);
+  --shadow-card:0 4px 18px #29476107;--shadow-subtle:0 1px 4px #29476108;
+  padding-top:30px;min-width:0;
+}
+.design .module-heading{display:flex;justify-content:space-between;align-items:center;padding:5px 0 27px;gap:20px;border-bottom:1px solid var(--line);margin-bottom:26px}
+.design .module-eyebrow{font-size:10px;letter-spacing:2px;color:var(--accent);font-weight:600}
+.design .module-heading h1{font-size:28px!important;font-weight:600;letter-spacing:-.7px;margin:11px 0 10px!important}
+.design .module-heading p{font-size:13px;color:var(--muted);margin:0;line-height:1.7}
+.design .module-index{font-size:40px;font-weight:300;color:var(--line);font-variant-numeric:tabular-nums}
+/* Existing titles are replaced visually by the descriptive module heading. */
+.design .module-body>div>h1,.design .module-body>div>.adb-page-header>h1,.design .module-body .hopp-head>h1{display:none}
+.design .module-body{min-width:0;color:var(--ink);font-size:13px;line-height:1.6}
+.design .module-body .card{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:22px;margin-bottom:20px;box-shadow:var(--shadow-card)}
+.design .module-body h2,.design .module-body h3{color:var(--ink);font-weight:600;letter-spacing:-.2px}
+.design .module-body h2{font-size:18px}.design .module-body h3{font-size:15px}
+.design .module-body .muted{color:var(--muted);font-size:12px;line-height:1.7}
+.design .module-body .form-row{gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.design .module-body :is(input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),select,textarea){background:var(--surface);border:1px solid var(--line);border-radius:7px;color:var(--ink);font-size:13px;min-height:36px;padding:8px 11px;transition:border-color .16s,box-shadow .16s}
+.design .module-body :is(input,select,textarea):focus-visible{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 14%,transparent)}
+.design .module-body :is(input,textarea)::placeholder{color:var(--muted);opacity:.8}
+.design .module-body :is(input[type=checkbox],input[type=radio]){accent-color:var(--accent)}
+.design .module-body :is(.btn,.open-btn){background:var(--accent);color:var(--bg);border:1px solid var(--accent);border-radius:7px;min-height:36px;padding:8px 15px;font-size:12px;font-weight:500;box-shadow:0 2px 4px #18344a0b;transition:filter .16s,box-shadow .16s,background .16s}
+.design .module-body :is(.btn,.open-btn):hover{filter:brightness(.95);box-shadow:0 3px 8px #18344a16}
+.design .module-body :is(.btn-gray,.btn-ghost,.btn-outline){background:var(--surface);color:var(--ink);border-color:var(--line);box-shadow:none}
+.design .module-body :is(.btn-gray,.btn-ghost,.btn-outline):hover{background:var(--hover);border-color:var(--accent)}
+.design .module-body .btn-danger{background:#a84c49;color:#fff;border-color:#a84c49}
+.design .module-body .btn-small{min-height:29px;padding:4px 9px;font-size:11px}
+.design .module-body button:disabled{opacity:.45;cursor:not-allowed;filter:none;box-shadow:none}
+.design .module-body button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.design .module-body :is(.tbl,.table){border-collapse:separate;border-spacing:0;width:100%;font-size:12px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.design .module-body :is(.tbl,.table) th{background:var(--hover);color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.3px;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+.design .module-body :is(.tbl,.table) td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:middle;color:var(--ink);transition:background .12s}
+.design .module-body :is(.tbl,.table) tr:last-child td{border-bottom:0}
+.design .module-body :is(.tbl,.table) tbody tr:hover td{background:var(--hover)}
+.design .module-body .tag{border-radius:5px;font-size:11px;font-weight:500;padding:3px 7px}
+.design .module-body .tag-blue{background:#e8eff5;color:#3b637f;border-color:#cbdce8}
+.design .module-body .tag-green{background:#e7f2ee;color:#3c7d6b;border-color:#c8ded6}
+.design .module-body .tag-red{background:#faedeb;color:#a65650;border-color:#edceca}
+.design .module-body .tag-purple{background:#edf0f5;color:#526781;border-color:#d4dce7}
+.design .module-body .stats-grid{gap:16px;margin-bottom:24px}
+.design .module-body .stat-card{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:21px;box-shadow:none}
+.design .module-body .stat-card .num{font-size:29px;font-weight:550;letter-spacing:-.8px;font-variant-numeric:tabular-nums;color:var(--accent)}
+.design .module-body .stat-card .lbl{font-size:11px;color:var(--muted);margin-top:8px}
+.design .module-body .modal-mask{background:#10233566;backdrop-filter:blur(5px)}
+.design .module-body .modal{background:var(--bg);border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 100px #102c4b38;padding:26px}
+.design .module-body .modal h3{margin-bottom:22px;font-size:19px}
+.design .module-body .modal label{color:var(--muted);font-size:12px}
+/* Device lab: connected device strip, segmented tools and readable technical output. */
+.design [data-page='/adbtools'] .adb-page-header{justify-content:flex-end;margin-bottom:18px}
+.design [data-page='/adbtools'] .device-manager-toggle{background:var(--surface);border:1px solid var(--line);border-radius:8px;color:var(--ink);padding:10px 14px}
+.design [data-page='/adbtools'] .device-summary{color:var(--accent);font-size:12px}
+.design [data-page='/adbtools'] .cat-nav{gap:4px;padding:5px;background:var(--hover);border:1px solid var(--line);border-radius:10px;margin-bottom:22px;display:flex;flex-wrap:wrap}
+.design [data-page='/adbtools'] .cat-btn{padding:9px 15px;border:1px solid transparent;border-radius:7px;background:transparent;color:var(--muted);font-size:12px;min-height:36px}
+.design [data-page='/adbtools'] .cat-btn.active{background:var(--surface);border-color:var(--line);color:var(--accent);box-shadow:0 2px 5px #2947610b}
+.design [data-page='/adbtools'] .cat-btn:hover{color:var(--accent)}
+.design .module-body :is(pre,code,textarea.sql){font-family:'Cascadia Code',Consolas,monospace;font-size:12px;line-height:1.7}
+.design .module-body pre{border-radius:8px;border:1px solid var(--line);padding:16px}
+/* Embedded API tool keeps its complete application and gets a dedicated frame. */
+.design [data-page='/apitest'] .hopp-wrap{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.design [data-page='/apitest'] .hopp-head{padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--line);justify-content:flex-end;min-height:54px}
+.design [data-page='/apitest'] .hopp-frame{height:calc(100vh - 285px);min-height:520px;width:100%;display:block}
+/* Preserve SQL editor's application layout and resize handles. */
+.design [data-page='/mysql-query'] .query-toolbar,.design [data-page='/mysql-query'] .query-tabstrip,.design [data-page='/mysql-query'] .result-tabstrip{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.design [data-page='/mysql-query'] .sql-editor textarea{border:0;border-radius:0;font-family:'Cascadia Code',Consolas,monospace;line-height:1.7}
+@media(max-width:700px){.design .module-heading{padding-bottom:20px;margin-bottom:20px}.design .module-heading h1{font-size:23px!important}.design .module-heading p{font-size:12px}.design .module-index{display:none}.design .module-body .card{padding:15px}.design .module-body .form-row{gap:8px}.design .module-body :is(.tbl,.table){font-size:11px}.design .module-body :is(.tbl,.table) :is(th,td){padding:10px}.design [data-page='/adbtools'] .cat-btn{padding:8px 10px}}
+@media(prefers-reduced-motion:reduce){.design .module-body *{transition:none!important}}

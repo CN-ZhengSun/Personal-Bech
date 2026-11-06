@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
+  { path: '/design-preview', name: 'design-preview', component: () => import('../views/DesignPreview.vue') },
   { path: '/login', name: 'login', component: () => import('../views/Login.vue'), meta: { public: true } },
   { path: '/', redirect: '/adbtools' },
   { path: '/report', name: 'report', component: () => import('../views/Report.vue') },
